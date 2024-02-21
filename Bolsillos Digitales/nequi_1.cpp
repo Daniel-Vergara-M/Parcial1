@@ -6,8 +6,10 @@ Miembros del grupo:
 Dirigido a: @Tlcabrera
 */
 
-#include <iostream> // Se importa la librería para inputs y outputs
-#include <map>      // Se importa la librería map para hacer diccionarios
+#include <iostream>  // Se importa la librería para inputs y outputs
+#include <string>    // Se importa la librería para el manejo de strings
+#include <map>       // Se importa la librería map para hacer diccionarios
+#include "methods.h" // Se importa el archivo methods.h que contiene los métodos de impresión
 
 using namespace std;
 
@@ -41,27 +43,200 @@ Matriz bidimensional de tipo string que soporta hasta 10 usuarios y contiene 5 c
 - Saldo
 */
 
-void println(string text)
-{
-    cout << text << endl;
-}
+string movimientosCuenta[20][6];
+// Structure: phoneNumber , date, amount, type, description, toPhoneNumber
+/* Possible types:
+0. "Depósito",
+1. "Retiro",
+2. "Transferencia",
+3. "Pago"
+*/
 
-void print(string text)
+void getMovementHistory(string *phoneNumber)
 {
-    cout << text;
-}
-
-template <typename T>
-void printMatriz(T vector, const int rows, const int columns)
-{
-    for (int i = 0; i < rows; i++)
+    /*
+    Se obtiene el historial de movimientos para el número del teléfono
+    */
+    bool hasMovements = false;
+    for (int i = 0; i < 20; i++)
     {
-        for (int j = 0; j < columns; j++)
+        if (*(*(movimientosCuenta + i) + 0) == *phoneNumber)
         {
-            print(vector[i][j] + ", ");
+            println("Fecha: " + *(*(movimientosCuenta + i) + 1) + " - Monto: " + *(*(movimientosCuenta + i) + 2) + " - Tipo: " + *(*(movimientosCuenta + i) + 3) + " - Descripción: " + *(*(movimientosCuenta + i) + 4) + " - Destinatario: " + *(*(movimientosCuenta + i) + 5));
+            hasMovements = true;
         }
-        println("");
     }
+
+    if (!hasMovements)
+    {
+        println("No hay movimientos para: " + *phoneNumber);
+    }
+}
+
+void getBalance(string *phoneNumber)
+{
+    /*
+    Se obtiene el saldo que se encuentra en la cuenta del número de teléfono
+    */
+    for (int i = 0; i < MAX_USERS; i++)
+    {
+        if (*(*(db + i) + 1) == *phoneNumber)
+        {
+            println("Su saldo es: " + *(*(db + i) + 5));
+            return;
+        }
+    }
+    println("Número de teléfono no encontrado");
+}
+
+void transfer(string *phoneNumber, string *toPhoneNumber, string *amount)
+{
+    /*
+    Se realizan transferencias del número A al número B con X cantidad de dinero
+    Y se descuenta X cantidad de dinero del número A para agregar al número B
+    Y se actualiza en la base de datos
+    */
+    for (int i = 0; i < 20; i++)
+    {
+        if (*(*(db + i) + 1) == *phoneNumber)
+        {
+            if (stoi(*(*(db + i) + 5)) >= stoi(*amount))
+            {
+                // Se actualiza el saldo de la persona que envia
+                *(*(db + i) + 5) = to_string(stoi(*(*(db + i) + 5)) - stoi(*amount));
+
+                // Se halla el índice de la persona que recibe
+                int receiverIndex = -1;
+                for (int j = 0; j < MAX_USERS; j++)
+                {
+                    if (*(*(db + j) + 1) == *toPhoneNumber)
+                    {
+                        receiverIndex = j;
+                        break;
+                    }
+                }
+
+                // Se actualiza el saldo de la persona que recibe
+                if (receiverIndex != -1)
+                {
+                    *(*(db + receiverIndex) + 5) = to_string(stoi(*(*(db + receiverIndex) + 5)) + stoi(*amount));
+                }
+
+                // Se agrega la información a la matriz de movimientosCuenta
+                int emptyIndex = getEmptyRowIndex(movimientosCuenta, 20, 6);
+                if (emptyIndex != -1)
+                {
+                    *(*(movimientosCuenta + emptyIndex) + 0) = *phoneNumber;
+                    *(*(movimientosCuenta + emptyIndex) + 1) = "2024-02-20";
+                    *(*(movimientosCuenta + emptyIndex) + 2) = *amount;
+                    *(*(movimientosCuenta + emptyIndex) + 3) = "2";
+                    *(*(movimientosCuenta + emptyIndex) + 4) = "Transferencia";
+                    *(*(movimientosCuenta + emptyIndex) + 5) = *toPhoneNumber;
+                    println("Transferencia realizada con éxito");
+                }
+                return;
+            }
+            else
+            {
+                println("Saldo insuficiente!");
+                return;
+            }
+        }
+    }
+    println("Número de teléfono no encontrado");
+}
+
+void withdraw(string *phoneNumber, string *amount)
+{
+    /*
+    Se retira X cantidad de dinero del número asignado
+    */
+    for (int i = 0; i < MAX_USERS; i++)
+    {
+        if (*(*(db + i) + 1) == *phoneNumber)
+        {
+            // Busca en la base de datos el mismo número
+            if (stoi(*(*(db + i) + 5)) >= stoi(*amount))
+            {
+                // Se verifica que el usuario tenga saldo o no
+                *(*(db + i) + 5) = to_string(stoi(*(*(db + i) + 5)) - stoi(*amount));
+                int emptyIndex = getEmptyRowIndex(movimientosCuenta, 20, 6);
+                if (emptyIndex != 1)
+                {
+                    *(*(movimientosCuenta + emptyIndex) + 0) = *phoneNumber;
+                    *(*(movimientosCuenta + emptyIndex) + 1) = "2024-02-20";
+                    *(*(movimientosCuenta + emptyIndex) + 2) = *amount;
+                    *(*(movimientosCuenta + emptyIndex) + 3) = "1";
+                    *(*(movimientosCuenta + emptyIndex) + 4) = "Retiro";
+                    *(*(movimientosCuenta + emptyIndex) + 5) = "N/A";
+                    println("Retiro realizado con éxito");
+                }
+                return;
+            }
+            else
+            {
+                println("Saldo insuficiente");
+                return;
+            }
+        }
+    }
+    println("Número de teléfono no encontrado");
+}
+
+void deposit(string *phoneNumber, string *amount)
+{
+    for (int i = 0; i < MAX_USERS; i++)
+    {
+        if (*(*(db + i) + 1) == *phoneNumber)
+        {
+            *(*(db + i) + 5) = to_string(stoi(*(*(db + i) + 5)) + stoi(*amount));
+            int emptyIndex = getEmptyRowIndex(movimientosCuenta, 20, 6);
+            if (emptyIndex != 1)
+            {
+                *(*(movimientosCuenta + emptyIndex) + 0) = *phoneNumber;
+                *(*(movimientosCuenta + emptyIndex) + 1) = "2024-02-20";
+                *(*(movimientosCuenta + emptyIndex) + 2) = *amount;
+                *(*(movimientosCuenta + emptyIndex) + 3) = "0";
+                *(*(movimientosCuenta + emptyIndex) + 4) = "Depósito";
+                *(*(movimientosCuenta + emptyIndex) + 5) = "N/A";
+                println("Depósito realizado con éxito");
+            }
+            return;
+        }
+    }
+    println("Número de teléfono no encontrado");
+}
+
+void pay(string *phoneNumber, string *amount, string *description)
+{
+    for (int i = 0; i < MAX_USERS; i++)
+    {
+        if (*(*(db + i) + 1) == *phoneNumber)
+        {
+            if (stoi(*(*(db + i) + 5)) >= stoi(*amount))
+            {
+                *(*(db + i) + 5) = to_string(stoi(*(*(db + i) + 5)) - stoi(*amount));
+                int emptyIndex = getEmptyRowIndex(movimientosCuenta, 20, 6);
+                if (emptyIndex != -1)
+                {
+                    *(*(movimientosCuenta + i) + 0) = *phoneNumber;
+                    *(*(movimientosCuenta + i) + 1) = "2024-02-20";
+                    *(*(movimientosCuenta + i) + 2) = *amount;
+                    *(*(movimientosCuenta + i) + 3) = "3";
+                    *(*(movimientosCuenta + i) + 4) = *description;
+                    *(*(movimientosCuenta + i) + 5) = "N/A";
+                    println("Pago realizado con éxito");
+                }
+                return;
+            }
+            else
+            {
+                println("Saldo insuficiente");
+                return;
+            }
+        }
+    }
+    println("Número de teléfono no encontrado");
 }
 void registerAccount(string *username, string *phoneNumber, string *pass)
 {
@@ -147,6 +322,67 @@ bool login(string *username, string *phoneNumber, string *pass)
     return false;
 };
 
+void onLoginMenu(string *phoneNumber)
+{
+    int option = 0;
+    string amount, description, toPhoneNumber, newPass, username, pass, questionId, questionAnswer;
+    do
+    {
+        println("=== MENU ===");
+        println("1. Consultar saldo");
+        println("2. Realizar transferencia");
+        println("3. Retirar dinero");
+        println("4. Depositar dinero");
+        println("5. Pagar");
+        println("6. Historial de movimientos");
+        println("7. Salir");
+        print(" Seleccione una opción: ");
+        cin >> option;
+        switch (option)
+        {
+        case 1:
+            getBalance(phoneNumber);
+            break;
+        case 2:
+            print("Ingrese el número de teléfono al que desea transferir: ");
+            cin >> toPhoneNumber;
+            print("Ingrese el monto a transferir: ");
+            cin >> amount;
+            transfer(phoneNumber, &toPhoneNumber, &amount);
+            printMatriz(movimientosCuenta, 20, 6);
+            break;
+        case 3:
+            print("Ingrese el monto a retirar: ");
+            cin >> amount;
+            withdraw(phoneNumber, &amount);
+            printMatriz(movimientosCuenta, 20, 6);
+            break;
+        case 4:
+            print("Ingrese el monto a depositar: ");
+            cin >> amount;
+            deposit(phoneNumber, &amount);
+            printMatriz(movimientosCuenta, 20, 6);
+            break;
+        case 5:
+            print("Ingrese el monto a pagar: ");
+            cin >> amount;
+            print("Ingrese la descripción del pago: ");
+            cin >> description;
+            pay(phoneNumber, &amount, &description);
+            printMatriz(movimientosCuenta, 20, 6);
+            break;
+        case 6:
+            getMovementHistory(phoneNumber);
+            break;
+        case 7:
+            println("Saliendo del programa.");
+            break;
+        default:
+            println("Opción no válida");
+            break;
+        }
+    } while (option != 7);
+}
 void loginMenu()
 {
     string usuario, numCelular, clave;
@@ -162,6 +398,7 @@ void loginMenu()
         cin >> clave;
         if (login(&usuario, &numCelular, &clave))
         {
+            onLoginMenu(&numCelular);
             break;
         }
         else
@@ -223,12 +460,17 @@ void mainMenu()
             registerMenu();
             break;
         case 3:
+            recoverPasswordMenu();
             break;
         case 4:
-            println("Saliendo del programa.");
             break;
         default:
             println("Opción no válida");
+            break;
+        }
+        if (option == 4)
+        {
+            println("Saliendo del programa.");
             break;
         }
         if (times == 5)
