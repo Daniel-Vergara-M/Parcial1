@@ -3,22 +3,32 @@
 #include <stdlib.h>
 using namespace std;
 
-void threadOne(string *clave)
+void generateDinamicPassword(int *clave)
 {
-    srand(0);
-    this_thread::sleep_for(std::chrono::seconds(5));
-    *clave = "prueba";
-    cout << rand()%100 << endl;
+    while (true)
+    {
+        this_thread::sleep_for(chrono::seconds(1));
+        srand(time(nullptr));
+        *clave = (rand() % 900000 + 100000);
+        cout << "Espacio de Memoria Hilo " << &clave << " Valor " << *clave << endl;
+    }
+}
+
+int* initThreadDinamicPassword()
+{
+    int dinamicPassword = 0;
+    int *dinamicPasswordPtr = &dinamicPassword;
+    thread threadDinamicPassword(generateDinamicPassword, dinamicPasswordPtr);
+    threadDinamicPassword.detach();
+    return dinamicPasswordPtr;
 }
 
 int main()
 {
-    string clave = "trabajo";
-    thread first(threadOne, &clave);
-
-    first.join();
-    cout << clave << endl;
-    cout << "Final de los hilos";
+    int *dinamicPassword = initThreadDinamicPassword();
+    cout << "Espacio de Memoria Principal " << &dinamicPassword << " Valor " << *dinamicPassword << endl;
+    this_thread::sleep_for(chrono::seconds(1));
+    cout << "Espacio de Memoria Principal " << &dinamicPassword << " Valor " << *dinamicPassword << endl;
 
     return 0;
 }
