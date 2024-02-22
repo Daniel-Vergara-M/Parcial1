@@ -45,4 +45,4 @@ Se hace uso de la clase/módulo `methods.h` con el fin de que las funciones que 
   - loginMenu(); Inicio de sesión para los usuarios registrados.
   - recoverPasswordMenu(); Cambio de contraseña.
   - onLoginMenu(); Menú que muestra las funcionalidades que tienen relación al dinero o movimientos.
-  - mainMenu(); Hace uso de las 3 primeras funciones en este apartado.
+  - mainMenu(); Hace uso de las 3 primeras funciones en este apartado y te permite escoger a cual quieres acceder.
