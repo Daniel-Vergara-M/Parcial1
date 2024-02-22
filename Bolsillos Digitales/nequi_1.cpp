@@ -32,7 +32,7 @@ string db[MAX_USERS][6] = {
     // Structure: username, phoneNumber, password, questionId, questionAnswer, balance
     {"Juan", "3008493756", "1974", "1", "Peter", "100000"},
     {"Pedro", "3158640321", "0567", "3", "Alberto", "50000"},
-    {"Daniel", "3125198270", "0604", "1", "Susy", "0"}};
+    {"Daniel", "3125198270", "8473", "1", "Susy", "0"}};
 /*
 Matriz bidimensional de tipo string que soporta hasta 10 usuarios y contiene 5 columnas:
 - Nombre de usuario
