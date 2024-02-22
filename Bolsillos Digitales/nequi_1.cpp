@@ -149,7 +149,7 @@ void transfer(string *phoneNumber, string *toPhoneNumber, string *amount)
 void withdraw(string *phoneNumber, string *amount)
 {
     /*
-    Se retira X cantidad de dinero del número asignado
+    Se retira X cantidad de dinero del número asignado por el usuario
     */
     for (int i = 0; i < MAX_USERS; i++)
     {
@@ -245,11 +245,12 @@ void registerAccount(string *username, string *phoneNumber, string *pass)
     {
         if (*(*(db + i) + 0) == "")
         {
+            // Verifica que el primer elemento de la fila este vacio
             *(*(db + i) + 0) = *username;
             *(*(db + i) + 1) = *phoneNumber;
             *(*(db + i) + 2) = *pass;
             println("Seleccione una pregunta de seguridad: ");
-            for (int j = 0; j < MAX_QUESTIONS; j++)
+            for (int j = 0; j < MAX_QUESTIONS; j++) // Se itera en la matriz bidimensional de preguntas
             {
                 println(*(*(questions + j) + 0) + ". " + *(*(questions + j) + 1));
             }
@@ -301,12 +302,14 @@ bool login(string *username, string *phoneNumber, string *pass)
 {
     if (phoneNumber->length() != 10)
     {
+        // Se verifica que la longitud del número del teléfono sea igual a 10
         println("El número de teléfono debe tener 10 dígitos.");
         return false;
     }
 
     if (pass->length() != 4)
     {
+        // Se verifica que la longitud de la contraseña sea igual a 4
         println("La contraseña debe tener 4 caracteres.");
         return false;
     }
@@ -315,6 +318,7 @@ bool login(string *username, string *phoneNumber, string *pass)
     {
         if (*(*(db + i) + 0) == *username && *(*(db + i) + 1) == *phoneNumber && *(*(db + i) + 2) == *pass)
         {
+            // Se verifican los valores introducidos por el usuario, con lo que se encuentra en base de datos
             println("Bienvenido " + *username);
             return true;
         }
@@ -349,19 +353,16 @@ void onLoginMenu(string *phoneNumber)
             print("Ingrese el monto a transferir: ");
             cin >> amount;
             transfer(phoneNumber, &toPhoneNumber, &amount);
-            printMatriz(movimientosCuenta, 20, 6);
             break;
         case 3:
             print("Ingrese el monto a retirar: ");
             cin >> amount;
             withdraw(phoneNumber, &amount);
-            printMatriz(movimientosCuenta, 20, 6);
             break;
         case 4:
             print("Ingrese el monto a depositar: ");
             cin >> amount;
             deposit(phoneNumber, &amount);
-            printMatriz(movimientosCuenta, 20, 6);
             break;
         case 5:
             print("Ingrese el monto a pagar: ");
@@ -369,7 +370,6 @@ void onLoginMenu(string *phoneNumber)
             print("Ingrese la descripción del pago: ");
             cin >> description;
             pay(phoneNumber, &amount, &description);
-            printMatriz(movimientosCuenta, 20, 6);
             break;
         case 6:
             getMovementHistory(phoneNumber);
@@ -406,7 +406,7 @@ void loginMenu()
             println("¡Usuario no encontrado!");
         }
     }
-    if (intentos == MAX_ATTEMPTS)
+    if (intentos == MAX_ATTEMPTS - 1)
     {
         println("Ha superado el número de intentos permitidos");
         return;
@@ -482,7 +482,6 @@ void mainMenu()
 }
 int main()
 {
-
     mainMenu();
     return 0;
 }
