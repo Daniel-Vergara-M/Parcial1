@@ -339,7 +339,8 @@ void onLoginMenu(string *phoneNumber)
         println("4. Depositar dinero");
         println("5. Pagar");
         println("6. Historial de movimientos");
-        println("7. Salir");
+        println("7. Buscar puntos de retiro");
+        println("8. Salir");
         print(" Seleccione una opción: ");
         cin >> option;
         switch (option)
@@ -375,6 +376,9 @@ void onLoginMenu(string *phoneNumber)
             getMovementHistory(phoneNumber);
             break;
         case 7:
+            println("Saliendo del programa.");
+            break;
+        case 8:
             println("Saliendo del programa.");
             break;
         default:
@@ -480,6 +484,7 @@ void mainMenu()
     } while (times < 6);
     print("" + times);
 }
+
 int main()
 {
     mainMenu();
