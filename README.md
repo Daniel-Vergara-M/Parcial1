@@ -32,7 +32,8 @@ Se hace uso de la clase/módulo `methods.h` con el fin de que las funciones que 
   - updatePassword(nombre_de_usuario, número_de_teléfono, contraseña_nueva); Se actualiza la contraseña del usuario por medio de la respuesta a su pregunta de seguridad designada al momento de crear la cuenta.
 
 - **Funciones con relación al dinero o movimientos:**
-
+  - searchCashier(); Muestra en consola una lista de cajeros disponibles y calcula los movimientos que tienes que hacer para llegar al mismo
+  - initThreadDinamicPassword(); inicia un hilo concurrente y separado al hilo inicial de la aplicacion en el cual se va a ir actualizando cada cierto tiempo la clave dinamica
   - getMovementHistory(número_de_teléfono); Muestra en consola el historial de movimientos realizados para la cuenta activa.
   - getBalance(número_de_teléfono); Muestra en consola el saldo total en la cuenta activa.
   - transfer(número_de_teléfono, número_de_teléfono_a_enviar, cantidad); Se realiza la transferencia de un monto de dinero desde la cuenta activa, a otra cuenta activa del servicio.
