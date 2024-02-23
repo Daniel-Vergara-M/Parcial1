@@ -92,47 +92,46 @@ void calculateIndications(int *calleOrigen, int *carreraOrigen, int *numeroOrige
     int blocksCra = abs(*carreraOrigen - *(*(directions + *selectedDirection) + 2));
 
     // Imprime las indicaciones de dirección
-    cout << "Desde la ubicación ";
-    cout << "Calle " << *calleOrigen << " Carrera " << *carreraOrigen << " #" << *numeroOrigen;
-    cout << " hasta la ubicación ";
-    cout << "Calle " << *(*(directions + *selectedDirection) + 1) << " Carrera " << *(*(directions + *selectedDirection) + 2) << " #" << *(*(directions + *selectedDirection) + 3) << ":\n";
+    println("Desde la ubicación");
+    print("Calle " + *calleOrigen + *" Carrera " + *carreraOrigen + *" #" + *numeroOrigen);
+    println(" hasta la ubicación ");
+    println("Calle " + *(*(directions + *selectedDirection) + 1) + *" Carrera " + *(*(directions + *selectedDirection) + 2) + *" #" + *(*(directions + *selectedDirection) + 3));
 
     // Imprime la primera indicación
-    cout << "1. Dirígase hacia "; 
+    print("1. Dirígase hacia ");
     if (*calleOrigen < *(*(directions + *selectedDirection) + 1))
     {
-        cout << "el sur ";
+        print("el sur");
     }
     else
     {
-        cout << "el norte ";
+        print("el norte "); 
     }
-    cout << "por " << blocksStreet << " cuadras en la Calle " << *calleOrigen << ".\n";
+    println("por " + blocksStreet + *" cuadras en la Calle " + *calleOrigen + *".");
 
     // Imprime la segunda indicación
-    cout << "2. Gire a la ";
+    print("2. Gire a la ");
     if (*carreraOrigen < *(*(directions + *selectedDirection) + 2))
     {
-        cout << "derecha ";
+        print("derecha ");
     }
     else
     {
-        cout << "izquierda ";
+        print("izquierda ");
     }
-
-    cout << "en la Carrera " << *carreraOrigen << " y avance ";
-    cout << blocksCra << " cuadras hacia ";
+    print("en la Carrera " + *carreraOrigen + *" y avance ");
+    print(blocksCra + " cuadras hacia ");
     if (*carreraOrigen < *(*(directions + *selectedDirection) + 2))
     {
-        cout << "el occidente.\n";
+        print("el occidente.");
     }
     else
     {
-        cout << "el oriente.\n";
+        print("el oriente.");
     }
 
     // Imprime la tercera indicación
-    cout << "3. Busque el número de establecimiento " << *(*(directions + *selectedDirection) + 3) << " en la Calle " << *(*(directions + *selectedDirection) + 1) << ".\n";
+    println("3. Busque el número de establecimiento " + *(*(directions + *selectedDirection) + 3) + *" en la Calle " + *(*(directions + *selectedDirection) + 1) + *".");
 }
 
 // Función para buscar el cajero
@@ -140,22 +139,22 @@ void searchCashier()
 {
     int street, cra, number, selectedDirection;
     // Solicita al usuario ingresar la calle, carrera y número de establecimiento
-    cout << "Ingrese la calle en la que se encuentra: " << endl;
+    print("Ingrese la ubicación actual del usuario");
     cin >> street;
 
-    cout << "Ingrese la carrera en la que se encuentra: " << endl;
+    print("Ingrese la carrera en la que se encuentra: ");
     cin >> cra;
 
-    cout << "Ingrese el numero de establecimiento en el que se encuentra: " << endl;
+    print("Ingrese el numero de establecimiento en el que se encuentra: ");
     cin >> number;
 
-    cout << "Seleccione alguna de las siguientes ubicaciones de cajeros: " << endl;
+    println("Seleccione alguna de las siguientes ubicaciones de cajeros: ");
     for (int i = 0; i < 5; i++)
     {
-        cout << *(*(directions + i)) << ". ";
-        cout << "Calle: " << *(*(directions + i) + 1);
-        cout << " Carrera: " << *(*(directions + i) + 2);
-        cout << " Numero Establecimiento: " << *(*(directions + i) + 3) << endl;
+        print(*(*(directions + i)) + ". ");
+        print("Calle: " + *(*(directions + i) + 1));
+        print(" Carrera: " + *(*(directions + i) + 2));
+        println(" Numero Establecimiento: " + *(*(directions + i) + 3));
     }
     cin >> selectedDirection;
     selectedDirection = selectedDirection - 1;
@@ -444,7 +443,7 @@ void onLoginMenu(string *phoneNumber)
     do
     {
         println("=== MENU ===");
-        cout << "Su clave dinamica es: " << dinamicPassword << endl;
+        println("Su clave dinamica es: " + dinamicPassword);
         println("1. Consultar saldo");
         println("2. Realizar transferencia");
         println("3. Retirar dinero");
@@ -525,6 +524,7 @@ void loginMenu()
     if (intentos == MAX_ATTEMPTS - 1)
     {
         println("Ha superado el número de intentos permitidos");
+        println("Usuario bloqueado.");
         return;
     }
 }
